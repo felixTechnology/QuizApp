@@ -1,29 +1,31 @@
 //console.log('Hello Ghana')
 
+/*Creating couple of variables*/
 const question = document.getElementById('question');
 const choices = Array.from(document.getElementsByClassName('choice-text'));
-//console.log(choices);
+console.log(choices);
 
 let currentQuestion = {}; /*Creating variable for creating */
-let acceptingAnswers = false; /*variable to accept answers*/
+let acceptingAnswers = true; /*variable to accept answers*/
 
 let score = 0;
 let questionCounter = 0;
 let availableQuesions = []; /*Empty array aaialable questions..Copy of 4 questions set and keep them and have avaialable */
 
-let questions = [
+let questions;
+questions = [
     {
         "question": "Inside which HTML element do we put the JavaScript??",
-        "choice1": "<script>",
-        "choice2": "<javascript>",
-        "choice3": "<js>",
-        "choice4": "<scripting>",
+        "choice1": "script",
+        "choice2": "javascript",
+        "choice3": "js",
+        "choice4": "scripting",
         "answer": 1
     },
     {
         "question": "What is the correct syntax for referring to an external script called 'xxx.js'?",
-        "choice1": "<script href='xxx.js'>",
-        "choice2": "<script name='xxx.js'>",
+        "choice1": `<script href='xxx.js'>`,
+        "choice2": `<script name='xxx.js'>`,
         "choice3": "<script src='xxx.js'>",
         "choice4": "<script file='xxx.js'>",
         "answer": 3
@@ -36,12 +38,12 @@ let questions = [
         "choice4": "alert('Hello World');",
         "answer": 4
     }
-]
+];
 
 
 //CONSTANTS
 const CORRECT_BONUS = 10;
-const MAX_QUESTIONS = 3;
+const MAX_QUESTIONS = 3; /*How many questions does one complete before another one can be started*/
 
 startGame = () => {
     questionCounter = 0;
@@ -52,25 +54,28 @@ startGame = () => {
 };
 
 getNewQuestion = () => {
-    if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
+
+    /*Checking if available questions is exhausted and setting to a maximum that can be answered at a time.*/
+   if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
         localStorage.setItem('mostRecentScore', score);
         //go to the end page
         return window.location.assign('end.html');
     }
     questionCounter++;
 
+    /*This randomly set the questions and reduces the available questions as when the user attempt them*/
     const questionIndex = Math.floor(Math.random() * availableQuesions.length);
     currentQuestion = availableQuesions[questionIndex];
     question.innerHTML = currentQuestion.question;
 
     choices.forEach((choice) => {
         const number = choice.dataset['number'];
-        choice.innerHTML = currentQuestion['choice' + number];
+        choice.innerHTML = currentQuestion['choice' + number];/*Out out the available we grabbing the available choices to be selected by user*/
 
     });
 
-    availableQuesions.splice(questionIndex, 1);
-    console.log(availableQuesions);
+   availableQuesions.splice(questionIndex, 1);
+   // console.log(availableQuesions);
     acceptingAnswers = true;
 };
 
@@ -82,8 +87,19 @@ choices.forEach((choice) => {
         const selectedChoice = e.target;
         const selectedAnswer = selectedChoice.dataset['number'];
 
-          console.log(selectedAnswer);
-          getNewQuestion();
+        const classToApply =
+            selectedAnswer == currentQuestion.answer ? 'correct' : 'incorrect';
+
+        if (classToApply === 'correct') {
+            incrementScore(CORRECT_BONUS);
+        }
+
+        selectedChoice.parentElement.classList.add(classToApply);
+
+        setTimeout(() => {
+            selectedChoice.parentElement.classList.remove(classToApply);
+            getNewQuestion();
+        }, 1000);
     });
 });
 

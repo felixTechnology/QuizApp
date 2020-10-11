@@ -1,0 +1,26 @@
+[
+  {
+    "question": " Who is the CEO AmaliTech gGmbH ??",
+    "choice1": "Mark Zuckerberg",
+    "choice2": "Elon Musk",
+    "choice3": "Tim Cook",
+    "choice4": "Martin Hecker",
+    "answer": 4
+  },
+  {
+    "question": "AmaliTech Training academy has been in full operations in Ghana since ?",
+    "choice1": "2015",
+    "choice2": "2018",
+    "choice3": "2019",
+    "choice4": "2017",
+    "answer": 4
+  },
+  {
+    "question": " These are some tracks academic disciplines of AmaliTech Except ,",
+    "choice1": "Software Testing Track",
+    "choice2": "Media and Design Track",
+    "choice3": "Culture and Dance Track",
+    "choice4": "Machine Learning",
+    "answer": 3
+  }
+]

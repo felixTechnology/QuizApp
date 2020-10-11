@@ -1,18 +1,33 @@
-//console.log('Hello Ghana')
-
-/*Creating couple of variables*/
 const question = document.getElementById('question');
 const choices = Array.from(document.getElementsByClassName('choice-text'));
-console.log(choices);
-
-let currentQuestion = {}; /*Creating variable for creating */
-let acceptingAnswers = true; /*variable to accept answers*/
-
+const progressText = document.getElementById('progressText');
+const scoreText = document.getElementById('score');
+const progressBarFull = document.getElementById('progressBarFull');
+const loader = document.getElementById('loader');
+const game = document.getElementById('game');
+let currentQuestion = {};
+let acceptingAnswers = false;
 let score = 0;
 let questionCounter = 0;
-let availableQuesions = []; /*Empty array aaialable questions..Copy of 4 questions set and keep them and have avaialable */
+let availableQuesions = [];
 
-let questions;
+let questions = [];
+
+fetch(
+    "questions.json"
+)
+    .then((res) => {
+        return res.json();
+    })
+    .then((loadedQuestions) => {
+        questions = loadedQuestions;
+        startGame();
+    })
+    .catch((err) => {
+        console.error(err);
+    });
+
+/*
 questions = [
     {
         "question": "Inside which HTML element do we put the JavaScript??",
@@ -39,43 +54,44 @@ questions = [
         "answer": 4
     }
 ];
+*/
+
 
 
 //CONSTANTS
 const CORRECT_BONUS = 10;
-const MAX_QUESTIONS = 3; /*How many questions does one complete before another one can be started*/
+const MAX_QUESTIONS = 3;
 
 startGame = () => {
     questionCounter = 0;
     score = 0;
-    availableQuesions = [...questions];/* spread operator will take what is in the array been taken into this array and spread the items  */
-    console.log(availableQuesions);
+    availableQuesions = [...questions];
     getNewQuestion();
+    game.classList.remove('hidden');
+    loader.classList.add('hidden');
 };
 
 getNewQuestion = () => {
-
-    /*Checking if available questions is exhausted and setting to a maximum that can be answered at a time.*/
-   if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
+    if (availableQuesions.length === 0 || questionCounter >= MAX_QUESTIONS) {
         localStorage.setItem('mostRecentScore', score);
         //go to the end page
         return window.location.assign('end.html');
     }
     questionCounter++;
+    progressText.innerText = `Question ${questionCounter}/${MAX_QUESTIONS}`;
+    //Update the progress bar
+    progressBarFull.style.width = `${(questionCounter / MAX_QUESTIONS) * 100}%`;
 
-    /*This randomly set the questions and reduces the available questions as when the user attempt them*/
     const questionIndex = Math.floor(Math.random() * availableQuesions.length);
     currentQuestion = availableQuesions[questionIndex];
     question.innerHTML = currentQuestion.question;
 
     choices.forEach((choice) => {
         const number = choice.dataset['number'];
-        choice.innerHTML = currentQuestion['choice' + number];/*Out out the available we grabbing the available choices to be selected by user*/
-
+        choice.innerHTML = currentQuestion['choice' + number];
     });
 
-   availableQuesions.splice(questionIndex, 1);
-   // console.log(availableQuesions);
+    availableQuesions.splice(questionIndex, 1);
     acceptingAnswers = true;
 };
 
@@ -107,6 +123,3 @@ incrementScore = (num) => {
     score += num;
     scoreText.innerText = score;
 };
-
-
-//startGame();

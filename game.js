@@ -103,4 +103,10 @@ choices.forEach((choice) => {
     });
 });
 
-startGame();
+incrementScore = (num) => {
+    score += num;
+    scoreText.innerText = score;
+};
+
+
+//startGame();
